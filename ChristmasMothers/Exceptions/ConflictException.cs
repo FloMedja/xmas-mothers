@@ -4,7 +4,7 @@ using System.Text;
 
 namespace ChristmasMothers.Exceptions
 {
-    public class ConflictException : ChristmasMotherException
+    public class ConflictException : ChristmasMothersException
     {
         public ConflictException(string message) : base(message)
         {
