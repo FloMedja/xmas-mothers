@@ -1,0 +1,37 @@
+<project name="pre-install-project" default="pre-script-entrypoint" basedir=".">
+  <description>
+    Property checks and auto-generation
+  </description>
+
+  <target name="pre-script-entrypoint">
+	<echo message="Using custom pre-script" />
+	<!-- Parameter check -->
+	<fail unless="mssql.server.name">Missing MSSQL server name (mssql.server.name).</fail>
+    <fail unless="mssql.database.name">Missing MSSQL database name (mssql.database.name).</fail>
+	<!--
+	<fail unless="mssql.database.username">Missing MSSQL database username (mssql.database.username).</fail>
+	<fail unless="mssql.database.password">Missing MSSQL database password (mssql.database.password).</fail>
+	-->
+	<fail unless="mssql.database.super.username">Missing MSSQL database username (mssql.database.super.username).</fail>
+	<fail unless="mssql.database.super.password">Missing MSSQL database password (mssql.database.super.password).</fail>
+  <fail unless="client-secret.rawValue">Missing client secret (client-secret.rawValue).</fail>
+	<!-- Database installation -->
+	<installDatabase />
+  </target>
+
+  <!-- Gets the domain name -->
+  <macrodef name="installDatabase">
+    <attribute name="failonerror" default="true" />
+    <sequential>
+      <exec executable="powershell.exe"
+            failonerror="@{failonerror}"
+            failifexecutionfails="@{failonerror}">
+		<arg value="-ExecutionPolicy" />
+		<arg value="RemoteSigned" />
+        <arg value="-Command" />
+		<arg value=".\install-database.ps1 -Hostname ${mssql.server.name} -Username ${mssql.database.super.username} -Password ${mssql.database.super.password} -DatabaseName ${mssql.database.name} -Secret ${client-secret.rawValue}" />
+      </exec>
+    </sequential>
+  </macrodef>
+
+</project>

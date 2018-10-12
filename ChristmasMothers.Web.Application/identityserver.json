@@ -1,0 +1,9 @@
+﻿{
+  "IdentityServer": {
+    "Authority": "",
+    "RequireHttpsMetadata": true,
+    "AllowedScopes": [ "ChristmasMothers-api" ],
+    "LegacyAudienceValidation": true,
+    "EnableAuthorization":  false 
+  }
+}
