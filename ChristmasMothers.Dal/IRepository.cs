@@ -26,6 +26,7 @@ namespace ChristmasMothers.Dal
         ///     Deletes the specified entity.
         /// </summary>
         Task RemoveAsync(TEntity entity);
+        Task RemoveAsync(TKey id);
 
         /// <summary>
         ///     Deletes the specified entities.
@@ -46,6 +47,7 @@ namespace ChristmasMothers.Dal
         ///     Asynchronously gets the entity with specified ID.
         /// </summary>
         Task<TEntity> GetByIdAsync(TKey id);
+        Task<TEntity> GetByIdWithChildrenAsync(TKey id, bool loadRelativeChildren = false);
 
         /// <summary>
         ///     Inserts the specified entity into the table.
@@ -108,5 +110,10 @@ namespace ChristmasMothers.Dal
 
         int GetCount();
         Task<int> GetCountAsync();
+
+        Task<bool> ExistAsync(TKey id);
+        Task<ICollection<TEntity>> AllWithChildrenAsync(bool loadRelativeChildren = false);
+        Task UpdateEntryAsync(TEntity entity);
     }
+
 }

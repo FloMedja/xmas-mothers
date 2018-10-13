@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace ChristmasMothers.Entities
 {
@@ -7,6 +8,8 @@ namespace ChristmasMothers.Entities
     {        
         string GivenName { get; set; }
         string FamilyName { get; set; }
-        int Age { get; set; }
+        string CellNumber { get; set; }
+        Address Address { get; set; }
+        string Email { get; set; }
     }
 }

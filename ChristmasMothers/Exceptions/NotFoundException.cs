@@ -2,7 +2,7 @@
 
 namespace ChristmasMothers.Exceptions
 {
-    public class NotFoundException : ChristmasMotherException
+    public class NotFoundException : ChristmasMothersException
     {
         public NotFoundException(Guid id, Type type) : base(FormatMessage(id, type))
         {

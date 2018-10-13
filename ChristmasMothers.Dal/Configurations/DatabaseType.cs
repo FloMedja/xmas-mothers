@@ -5,7 +5,7 @@
         SqlServer,
         Oracle,
         MySql,
-        Postgre,
+        Postgres,
         SqlLite,
         InMemory
     }

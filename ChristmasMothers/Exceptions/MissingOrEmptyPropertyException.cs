@@ -2,7 +2,7 @@
 
 namespace ChristmasMothers.Exceptions
 {
-    public class MissingOrEmptyPropertyException : ChristmasMotherException
+    public class MissingOrEmptyPropertyException : ChristmasMothersException
     {
         public MissingOrEmptyPropertyException(string propertyName, Type type)
             : base(FormatMessage(propertyName, type)) { }

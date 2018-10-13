@@ -14,7 +14,7 @@
   <ItemGroup>
     <ProjectReference Include="..\ChristmasMothers.Business\ChristmasMothers.Business.csproj" />
     <ProjectReference Include="..\ChristmasMothers.Web.Api\ChristmasMothers.Web.Api.csproj" />
-    <ProjectReference Include="..\ChristmasMother\ChristmasMothers.csproj" />
+    <ProjectReference Include="..\ChristmasMothers\ChristmasMothers.csproj" />
   </ItemGroup>
 
   <ItemGroup>

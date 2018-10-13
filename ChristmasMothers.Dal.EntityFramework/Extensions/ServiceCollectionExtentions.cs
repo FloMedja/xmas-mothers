@@ -21,7 +21,7 @@ namespace ChristmasMothers.Dal.EntityFramework.Extensions
                 Schema = EnvironmentVariables.ChristmasMotherSchema != null ? EnvironmentVariables.ChristmasMotherSchema : configuration.GetConnectionString("ChristmasMotherSchema")
             });
             
-            services.AddScoped<IRequisitionRepository, RequisitionRepository>();
+            services.AddScoped<IRequisitionRepository, ParentRepository>();
         }
     }
 }

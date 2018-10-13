@@ -13,6 +13,7 @@ namespace ChristmasMothers.Business.Interface
         /// <typeparam name="TResponse">The type to map the resulting entities to.</typeparam>
         /// <returns>The collection of parent.</returns>
         Task<IEnumerable<TResponse>> AllAsync<TResponse>();
+        Task<IEnumerable<TResponse>> AllWithChildrenAsync<TResponse>(bool includeAllRelativeEntitiesChildren = false);
 
         /// <summary>
         /// Gets a specific parent.
@@ -20,15 +21,10 @@ namespace ChristmasMothers.Business.Interface
         /// <typeparam name="TResponse">The type to map the resulting entity to.</typeparam>
         /// <param name="parentId">parent ID (guid).</param>
         /// <param name="includeChildren">includeChildren (bool).</param>
+        /// <param name="includeAllRelativeEntitiesChildren"></param>
         /// <returns>The specific parent and optionnaly its child.</returns>
-        Task<TResponse> GetByIdAsync<TResponse>(Guid parentId, bool includeChildren);
-
-        Task<TResponse> GetByRequisitionIdAsync<TResponse>(string parentId, bool includeChildren);
-
-        Task<TResponse> GetAllAsync<TResponse>();
-
-        Task<int> GetNumberOfRequisition();
-        Task<TResponse> SearchAsync<TRequest,TResponse>(TRequest request);
+        Task<TResponse> GetByIdAsync<TResponse>(Guid parentId, bool includeChildren, bool includeAllRelativeEntitiesChildren = false);
+        Task<TResponse> SearchAsync<TRequest,TResponse>(TRequest request, bool includeChildren = false ,bool includeAllRelativeEntitiesChildren = false);
 
         /// <summary>
         /// Create a parent.
@@ -45,7 +41,6 @@ namespace ChristmasMothers.Business.Interface
         /// <typeparam name="TResponse">Desired return type.</typeparam>
         /// <returns></returns>
         Task<TResponse> UpdateAsync<TRequest, TResponse>( TRequest parentPayload);
-
         /// <summary>
         /// Deletes a parent by setting it's Deleted property (soft delete).
         /// </summary>

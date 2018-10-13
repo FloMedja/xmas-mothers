@@ -2,7 +2,7 @@
 
 namespace ChristmasMothers.Exceptions
 {
-    public class UnauthorizedException : ChristmasMotherException
+    public class UnauthorizedException : ChristmasMothersException
     {
         public UnauthorizedException(string message) : base(message)
         {

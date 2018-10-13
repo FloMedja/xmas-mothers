@@ -6,6 +6,7 @@ using ChristmasMothers.Business.Interface;
 using ChristmasMothers.Dal.Repositories;
 using ChristmasMothers.Entities;
 using ChristmasMothers.Exceptions;
+using ChristmasMothers.Extensions;
 
 namespace ChristmasMothers.Business
 {
@@ -31,6 +32,11 @@ namespace ChristmasMothers.Business
             var results = await _parentRepository.AllAsync();
             return _mapper.Map<IEnumerable<TResponse>>(results);
         }
+        public async Task<IEnumerable<TResponse>> AllWithChildrenAsync<TResponse>(bool includeAllRelativeEntitiesChildren = false)
+        {
+            var results = await _parentRepository.AllWithChildrenAsync(includeAllRelativeEntitiesChildren);
+            return _mapper.Map<IEnumerable<TResponse>>(results);
+        }
 
         /// <summary>
         /// Get By ID Async
@@ -39,10 +45,19 @@ namespace ChristmasMothers.Business
         /// <typeparam name="TResponse">The type to map the resulting entity to</typeparam>
         /// <param name="parentId">parent ID.</param>
         /// <param name="includeChildren">Include children collections: true|False</param>
+        /// <param name="includeAllRelativeEntitiesChildren"></param>
         /// <returns>The parent entity (mapped to <typeparamref name="TResponse"/>).</returns>
-        public async Task<TResponse> GetByIdAsync<TResponse>(Guid parentId, bool includeChildren)
+        public async Task<TResponse> GetByIdAsync<TResponse>(Guid parentId, bool includeChildren, bool includeAllRelativeEntitiesChildren = false)
         {
-            var parentEntity = await _parentRepository.GetByIdAsync(parentId, includeChildren);
+            Parent parentEntity;
+            if (includeChildren)
+            {
+                parentEntity = await _parentRepository.GetByIdWithChildrenAsync(parentId,includeAllRelativeEntitiesChildren);
+            }
+            else
+            {
+                parentEntity = await _parentRepository.GetByIdAsync(parentId);
+            }
             if (parentEntity.IsNull())
             {
                 throw new NotFoundException(parentId, typeof(Parent));
@@ -57,23 +72,8 @@ namespace ChristmasMothers.Business
         /// <param name="parentId">parent ID.</param>
         /// <param name="includeChildren">Include children collections: true|False</param>
         /// <returns>The parent entity (mapped to <typeparamref name="TResponse"/>)</returns>
-        public async Task<TResponse> GetByParentIdAsync<TResponse>(string parentId, bool includeChildren)
-        {
-            var parentEntity = await _parentRepository.GetByParentIdAsync(parentId, includeChildren);
-            if (parentEntity.IsNull())
-            {
-                throw new NotFoundException(parentId, typeof(Parent));
-            }
-            return _mapper.Map<TResponse>(parentEntity);
-        }
 
-        public async Task<TResponse> GetAllAsync<TResponse>()
-        {
-            var result = await _parentRepository.AllAsync();
-            return Mapper.Map<TResponse>(result);
-        }
-
-        public Task<TResponse> SearchAsync<TRequest, TResponse>(TRequest request)
+        public Task<TResponse> SearchAsync<TRequest, TResponse>(TRequest request, bool includeChildren = false, bool includeAllRelativeEntitiesChildren = false)
         {
             throw new NotImplementedException();
         }
