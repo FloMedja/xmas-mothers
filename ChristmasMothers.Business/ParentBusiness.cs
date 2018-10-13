@@ -5,6 +5,7 @@ using AutoMapper;
 using ChristmasMothers.Business.Interface;
 using ChristmasMothers.Dal.Repositories;
 using ChristmasMothers.Entities;
+using ChristmasMothers.Entities.@interface;
 using ChristmasMothers.Exceptions;
 using ChristmasMothers.Extensions;
 
@@ -14,11 +15,15 @@ namespace ChristmasMothers.Business
     {
         private readonly IMapper _mapper;
         private readonly IParentRepository _parentRepository;
+        private readonly IAddressBusiness _addressBusiness;
+        private readonly Type _objectType;
 
-        public ParentBusiness(IMapper mapper, IParentRepository parentRepository)
+        public ParentBusiness(IMapper mapper, IParentRepository parentRepository, IAddressRepository addressRepository, IAddressBusiness addressBusiness)
         {
             _mapper = mapper;
             _parentRepository = parentRepository;
+            _addressBusiness = addressBusiness;
+            _objectType = typeof(Parent);
         }
 
         #region GET
@@ -60,7 +65,7 @@ namespace ChristmasMothers.Business
             }
             if (parentEntity.IsNull())
             {
-                throw new NotFoundException(parentId, typeof(Parent));
+                throw new NotFoundException(parentId, _objectType);
             }
             return _mapper.Map<TResponse>(parentEntity);
         }
@@ -69,13 +74,24 @@ namespace ChristmasMothers.Business
         /// Get parent by parent Id
         /// </summary>
         /// <typeparam name="TResponse"></typeparam>
-        /// <param name="parentId">parent ID.</param>
+        /// <typeparam name="TRequest"></typeparam>
+        /// <param name="request"></param>
         /// <param name="includeChildren">Include children collections: true|False</param>
+        /// <param name="includeAllRelativeEntitiesChildren"></param>
         /// <returns>The parent entity (mapped to <typeparamref name="TResponse"/>)</returns>
-
-        public Task<TResponse> SearchAsync<TRequest, TResponse>(TRequest request, bool includeChildren = false, bool includeAllRelativeEntitiesChildren = false)
+        public async Task<TResponse> SearchAsync<TRequest, TResponse>(TRequest request, bool includeChildren = false, bool includeAllRelativeEntitiesChildren = false)
         {
-            throw new NotImplementedException();
+            var search = _mapper.Map<ISearchChildByAgeRequest>(request);
+           
+            if (includeChildren)
+            {
+                var parentsWithchildren = await _parentRepository.AllWithChildrenAsync(search.Skip, search.Take, includeAllRelativeEntitiesChildren);
+                return _mapper.Map<TResponse>(parentsWithchildren);
+            }
+
+            var parentsWithoutchildren = await _parentRepository.AllAsync(search.Skip, search.Take);
+            return _mapper.Map<TResponse>(parentsWithoutchildren);
+
         }
 
         public async Task<int> GetNumberOfParent()
@@ -99,11 +115,7 @@ namespace ChristmasMothers.Business
             var payloadEntity = _mapper.Map<Parent>(parentPayload);
             ValidateEntity(payloadEntity);
 
-            // TODO Control if parent exist and is deleted  or parent with same id exist
-
-            // Set "not deleted".
-            //payloadEntity.Deleted = false;
-
+            await _addressBusiness.CreateOrUpdateAsync<Address,Address>(payloadEntity.Address);
             await _parentRepository.AddAsync(payloadEntity);
             await _parentRepository.SaveChangesAsync();
             return _mapper.Map<TResponse>(payloadEntity);
@@ -123,23 +135,19 @@ namespace ChristmasMothers.Business
         public async Task<TResponse> UpdateAsync<TRequest, TResponse>(TRequest parentPayload)
         {
             // Map payload to entity.
-            var payloadEntity = _mapper.Map<Parent>(parentPayload);
-            ValidateEntity(payloadEntity);
+            var updateEntity = _mapper.Map<Parent>(parentPayload);
+            ValidateEntity(updateEntity);
 
-            var parentEntity = await _parentRepository.GetByIdAsync(payloadEntity.Id, false);
-            if (parentEntity.IsNull())
+            var oldEntity = await _parentRepository.GetByIdAsync(updateEntity.Id);
+            if (oldEntity.IsNull())
             {
-                throw new NotFoundException(payloadEntity.Id, typeof(Parent));
+                throw new NotFoundException(updateEntity.Id, typeof(Parent));
             }
-            //TODO : check if parent with same parent Id already exist
 
-            //TODO: update parent entity
-
-
-            await _parentRepository.UpdateAsync(parentEntity);
+            await _parentRepository.UpdateEntryAsync(updateEntity);
             await _parentRepository.SaveChangesAsync();
 
-            return _mapper.Map<TResponse>(parentEntity);
+            return _mapper.Map<TResponse>(updateEntity);
         }
         #endregion
 
@@ -152,8 +160,15 @@ namespace ChristmasMothers.Business
         /// <returns></returns>
         public async Task DeleteAsync(Guid parentId)
         {
-            // TODO : implement details dependent that the delete is soft or hard :)
+            var parentEntity = await _parentRepository.GetByIdAsync(parentId);
 
+            if (parentEntity.IsNull())
+            {
+                throw new NotFoundException(parentId, _objectType);
+            }
+            await _addressBusiness.DeleteAsync(parentEntity.Address.Id);
+            await _parentRepository.RemoveAsync(parentEntity);
+            await _parentRepository.SaveChangesAsync();
         }
 
         #endregion
@@ -170,7 +185,6 @@ namespace ChristmasMothers.Business
                 throw new MissingOrEmptyPropertyException(nameof(entity.Id), typeof(Parent));
             }
         }
-
 
 
         #endregion

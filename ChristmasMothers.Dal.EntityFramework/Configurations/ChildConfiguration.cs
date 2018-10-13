@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using ChristmasMothers.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace ChristmasMothers.Dal.EntityFramework.Configurations
 {
@@ -17,9 +18,9 @@ namespace ChristmasMothers.Dal.EntityFramework.Configurations
             builder.Property(x => x.Age).IsRequired();
             builder.Property(x => x.Sexe).IsRequired();
 
-            builder.HasOne(x => x.Address).WithMany();
-            builder.HasOne(x => x.Parent).WithMany(p => p.Children).HasForeignKey(c => c.ParentId);
-            builder.HasOne(x => x.GiftGiver).WithMany(xmm => xmm.MatchedChildren).HasForeignKey(x => x.GiftGiverId);
+            builder.HasOne(x => x.Address).WithMany().OnDelete(DeleteBehavior.Restrict);
+            builder.HasOne(x => x.Parent).WithMany(p => p.Children).HasForeignKey(c => c.ParentId).OnDelete(DeleteBehavior.Cascade);
+            builder.HasOne(x => x.GiftGiver).WithMany(xmm => xmm.MatchedChildren).HasForeignKey(x => x.GiftGiverId).OnDelete(DeleteBehavior.ClientSetNull);
 
         }
     }

@@ -15,6 +15,10 @@ namespace ChristmasMothers.Extensions
             return string.IsNullOrEmpty(str);
         }
 
+        public static bool IsNullOrEmptyOrWhiteSpace(this string str)
+        {
+            return string.IsNullOrEmpty(str) || string.IsNullOrWhiteSpace(str) ;
+        }
         public static string RemoveDiacritics(this string str)
         {
             var normalizedString = str.Normalize(NormalizationForm.FormD);

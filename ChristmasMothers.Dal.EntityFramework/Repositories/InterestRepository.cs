@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using ChristmasMothers.Dal.Repositories;
 using ChristmasMothers.Entities;
+using ChristmasMothers.Entities.Constants;
 
 namespace ChristmasMothers.Dal.EntityFramework.Repositories
 {
@@ -49,7 +49,7 @@ namespace ChristmasMothers.Dal.EntityFramework.Repositories
             }
 
             var childResult = childList.Skip(skip).Take(take).ToList();
-            var count = childResult.Count();
+            var count = childResult.Count;
             return new Tuple<IEnumerable<Child>, int>(childResult, count);
 
         }
@@ -69,13 +69,13 @@ namespace ChristmasMothers.Dal.EntityFramework.Repositories
             }
 
             var childResult = childList.Skip(skip).Take(take).ToList();
-            var count = childResult.Count();
+            var count = childResult.Count;
             return new Tuple<IEnumerable<Child>, int>(childResult, count);
         }
 
         public async Task<Tuple<IEnumerable<Child>, int>> SearchChildWithInterestAsync(int skip, int take, Guid interestId, bool match)
         {
-            take = take <= 0 || take >= 1000 ? 100 : take;
+            take = take <= 0 || take >= 1000 ? Constants.TakeDefaultValue : take;
             skip = skip < 0 ? 0 : skip;
             var interestQuery = Query().Where(x => x.Id == interestId)
                 .Include(x => x.InterestedChildren).ThenInclude(y => y.Child);
@@ -91,13 +91,13 @@ namespace ChristmasMothers.Dal.EntityFramework.Repositories
             }
 
             var childResult = childList.Skip(skip).Take(take).ToList();
-            var count = childResult.Count();
+            var count = childResult.Count;
             return new Tuple<IEnumerable<Child>, int>(childResult, count);
         }
 
         public async Task<Tuple<IEnumerable<Child>, int>> SearchChildWithInterestAsync(int skip, int take, string label, bool match)
         {
-            take = take <= 0 || take >= 1000 ? 100 : take;
+            take = take <= 0 || take >= 1000 ? Constants.TakeDefaultValue : take;
             skip = skip < 0 ? 0 : skip;
             var interestQuery = Query().Where(x => x.Label == label)
                 .Include(x => x.InterestedChildren).ThenInclude(y => y.Child);
@@ -113,13 +113,13 @@ namespace ChristmasMothers.Dal.EntityFramework.Repositories
             }
 
             var childResult = childList.Skip(skip).Take(take).ToList();
-            var count = childResult.Count();
+            var count = childResult.Count;
             return new Tuple<IEnumerable<Child>, int>(childResult, count);
         }
 
         public async Task<Tuple<IEnumerable<XMasMother>, int>> SearchXMasMotherWithInterestAsync(int skip, int take, Guid interestId)
         {
-            take = take <= 0 || take >= 1000 ? 100 : take;
+            take = take <= 0 || take >= 1000 ? Constants.TakeDefaultValue : take;
             skip = skip < 0 ? 0 : skip;
             var interestQuery = Query().Where(x => x.Id == interestId)
                 .Include(x => x.InterestedXMasMothers).ThenInclude(y => y.XMasMother)
@@ -133,13 +133,13 @@ namespace ChristmasMothers.Dal.EntityFramework.Repositories
             }
 
             var xMasMotherResult = xMasMotherList.Skip(skip).Take(take).ToList();
-            var count = xMasMotherResult.Count();
+            var count = xMasMotherResult.Count;
             return new Tuple<IEnumerable<XMasMother>, int>(xMasMotherResult, count);
         }
 
         public async Task<Tuple<IEnumerable<XMasMother>, int>> SearchXMasMotherWithInterestAsync(int skip, int take, string label)
         {
-            take = take <= 0 || take >= 1000 ? 100 : take;
+            take = take <= 0 || take >= 1000 ? Constants.TakeDefaultValue : take;
             skip = skip < 0 ? 0 : skip;
             var interestQuery = Query().Where(x => x.Label == label)
                 .Include(x => x.InterestedXMasMothers).ThenInclude(y => y.XMasMother)
@@ -153,7 +153,7 @@ namespace ChristmasMothers.Dal.EntityFramework.Repositories
             }
 
             var xMasMotherResult = xMasMotherList.Skip(skip).Take(take).ToList();
-            var count = xMasMotherResult.Count();
+            var count = xMasMotherResult.Count;
             return new Tuple<IEnumerable<XMasMother>, int>(xMasMotherResult, count);
         }
 

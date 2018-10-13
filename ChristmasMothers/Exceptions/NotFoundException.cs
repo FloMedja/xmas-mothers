@@ -16,9 +16,9 @@ namespace ChristmasMothers.Exceptions
         {
             return $"Could not find `{ type.Name }` with id: `{ id }`.";
         }
-        private static string FormatMessage(string name, Type type)
+        private static string FormatMessage(string trackingId, Type type)
         {
-            return $"Could not find `{ type.Name }` with name: `{ name }`.";
+            return $"Could not find `{ type.Name }` with tracking Id: `{ trackingId }`.";
         }
     }
 }

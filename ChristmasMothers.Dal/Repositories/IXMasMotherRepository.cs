@@ -20,8 +20,8 @@ namespace ChristmasMothers.Dal.Repositories
         /// <returns></returns>
         Task<Tuple<IEnumerable<XMasMother>, int>> SearchAsync(int skip, int take, string criteria);
 
-        Task<Tuple<IEnumerable<XMasMother>, int>> SearchMatchedXMaxMotherWith(int skip, int take);
-        Task<Tuple<IEnumerable<XMasMother>, int>> SearchMatchedXMaxMotherWith(int skip, int take, bool giftDeliver);
+        Task<Tuple<IEnumerable<XMasMother>, int>> SearchMatchedXMaxMother(int skip, int take);
+        Task<Tuple<IEnumerable<XMasMother>, int>> SearchMatchedXMaxMother(int skip, int take, bool giftDeliver);
         Task<Tuple<IEnumerable<XMasMother>, int>> SearchUnMatchedXMaxMotherWithChildAndDelivery(int skip, int take);
     }
 }

@@ -18,7 +18,7 @@ namespace ChristmasMothers.Dal.EntityFramework.Configurations
             builder.Property(x => x.Address).IsRequired();
             builder.Property(x => x.GiftDeliver).IsRequired().HasDefaultValue(false);
 
-            builder.HasOne(x => x.Address).WithMany();
+            builder.HasOne(x => x.Address).WithMany().OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

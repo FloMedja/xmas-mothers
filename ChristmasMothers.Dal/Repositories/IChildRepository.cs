@@ -18,5 +18,7 @@ namespace ChristmasMothers.Dal.Repositories
         /// <returns></returns>
         Task<Tuple<IEnumerable<Child>, int>> SearchAsync(int skip, int take, string criteria);
         Task<Tuple<IEnumerable<Child>, int>> SearchByAgeAsync(int skip, int take, int minAge , int maxAge);
+        Task<Tuple<IEnumerable<Child>, int>> SearchByMatchAsync(int skip, int take, bool match);
+
     }
 }
